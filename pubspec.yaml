@@ -33,6 +33,7 @@ dependencies:
   o3d: ^3.1.2
   get: ^4.6.6
   get_it: ^8.0.0
+  flutter_svg: ^2.0.10+1
 
 
   # The following adds the Cupertino Icons font to your application.
