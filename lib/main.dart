@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 
 import 'controller/controller_singletons.dart';
 import 'home_screen.dart';
+import 'welcome_screen.dart';
 
 final getIt = GetIt.instance;
 
@@ -36,7 +37,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      // home: const HomeScreen(),
+      home: const WelcomeScreen(),
     );
   }
 }
