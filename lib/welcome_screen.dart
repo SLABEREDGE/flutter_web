@@ -23,6 +23,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   final ValueNotifier<double> t1 = ValueNotifier(100);
   final ValueNotifier<double> t2 = ValueNotifier(300);
   final ValueNotifier<double> t3 = ValueNotifier(400);
+  final ValueNotifier<double> screen1 = ValueNotifier(0);
 
   bool updatePositionOnScroll(ScrollNotification scrollNotification) {
     dev.log(
@@ -58,21 +59,40 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       if ((scrollNotification.metrics.pixels <=
               MediaQuery.of(context).size.height) &&
           t1.value >= 0) {
-        t1.value = 100 - scrollNotification.metrics.pixels;
+        double temp;
+        temp = 100 - scrollNotification.metrics.pixels;
+        if (temp >= 0) {
+          t1.value = temp;
+        } else if (temp < 0) {
+          t1.value = 0;
+        }
+        // dev.log("t1.value ==> ${t1.value}");
       } else if (scrollNotification.metrics.pixels == 0) {
         t1.value = 200;
       }
       if ((scrollNotification.metrics.pixels <=
               MediaQuery.of(context).size.height) &&
           t2.value >= 120) {
-        t2.value = 300 - scrollNotification.metrics.pixels;
+        double temp;
+        temp = 300 - scrollNotification.metrics.pixels;
+        if (temp >= 120) {
+          t2.value = temp;
+        } else if (temp < 120) {
+          t2.value = 120;
+        }
       } else if (scrollNotification.metrics.pixels == 0) {
         t2.value = 300;
       }
       if ((scrollNotification.metrics.pixels <=
               MediaQuery.of(context).size.height) &&
           t3.value >= 300) {
-        t3.value = 400 - scrollNotification.metrics.pixels;
+        double temp;
+        temp = 400 - scrollNotification.metrics.pixels;
+        if (temp >= 300) {
+          t3.value = temp;
+        } else if (temp < 300) {
+          t3.value = 300;
+        }
       } else if (scrollNotification.metrics.pixels == 0) {
         t3.value = 400;
       }
@@ -84,6 +104,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         if (t3.value >= 250) {
           t3.value = --t3.value;
         }
+        if (screen1.value >= (-(MediaQuery.of(context).size.height / 2))) {
+          screen1.value = --screen1.value;
+        }
+      } else if (scrollNotification.metrics.pixels <=
+          (MediaQuery.of(context).size.height / 2)) {
+        if (t2.value <= 80) {
+          t2.value = ++t2.value;
+        }
+        if (t3.value <= 250) {
+          t3.value = ++t3.value;
+        }
+        if (screen1.value <= 0) {
+          screen1.value = ++screen1.value;
+        }
+        dev.log("screen1.value ===> ${screen1.value}");
       }
     });
     return true;
@@ -121,162 +156,209 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 SingleChildScrollView(
                   child: Column(
                     children: [
-                      Visibility(
-                        // visible: false,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
                         child: Stack(
-                          alignment: Alignment.center,
                           children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height,
-                              width: MediaQuery.of(context).size.width,
-                              child: Image.asset(
-                                "assets/bg0.png",
-                              ),
-                            ),
                             ValueListenableBuilder(
-                              valueListenable: bg1ImageOffset,
+                              valueListenable: screen1,
                               builder: (context, v, c) {
-                                return AnimatedPositioned(
-                                  left: bg1ImageOffset.value.dx,
-                                  top: bg1ImageOffset.value.dy,
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeOut,
-                                  child: SizedBox(
-                                    height: MediaQuery.of(context).size.height,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Image.asset(
-                                      "assets/bg1.png",
-                                      // fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            ValueListenableBuilder(
-                              valueListenable: bg2ImageOffset,
-                              builder: (context, v, c) {
-                                return AnimatedPositioned(
-                                  left: bg2ImageOffset.value.dx,
-                                  top: bg2ImageOffset.value.dy,
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeOut,
-                                  child: SizedBox(
-                                    height: MediaQuery.of(context).size.height,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Image.asset(
-                                      "assets/bg2.png",
-                                      // fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            ValueListenableBuilder(
-                              valueListenable: bg3ImageOffset,
-                              builder: (context, v, c) {
-                                return AnimatedPositioned(
-                                  left: bg3ImageOffset.value.dx,
-                                  top: bg3ImageOffset.value.dy,
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeOut,
-                                  child: SizedBox(
-                                    height: MediaQuery.of(context).size.height,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Image.asset(
-                                      "assets/bg3.png",
-                                      // fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            Positioned(
-                              top: bg1TextOffSet,
-                              child: SizedBox(
-                                height: MediaQuery.of(context).size.height,
-                                width: MediaQuery.of(context).size.width,
-                                child: Center(
-                                  child: Opacity(
-                                    opacity: bg1TextOpacity,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          "WELCOME",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleLarge
-                                              ?.copyWith(
-                                                fontSize: 60,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                return Positioned(
+                                  top: screen1.value,
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Image.asset(
+                                          "assets/bg0.png",
                                         ),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          // "Writing Testcases for your code is doubting\nyour own coding abilities. It's sign of weakness",
-                                          '"Trust your code like a craftsman trusts his tools\nsecond-guessing it only dulls your edge"',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleLarge
-                                              ?.copyWith(
-                                                fontSize: 30,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
+                                      ),
+                                      ValueListenableBuilder(
+                                        valueListenable: bg1ImageOffset,
+                                        builder: (context, v, c) {
+                                          return AnimatedPositioned(
+                                            left: bg1ImageOffset.value.dx,
+                                            top: bg1ImageOffset.value.dy,
+                                            duration: const Duration(
+                                                milliseconds: 300),
+                                            curve: Curves.easeOut,
+                                            child: SizedBox(
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: Image.asset(
+                                                "assets/bg1.png",
+                                                // fit: BoxFit.fill,
                                               ),
-                                          textAlign: TextAlign.center,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      ValueListenableBuilder(
+                                        valueListenable: bg2ImageOffset,
+                                        builder: (context, v, c) {
+                                          return AnimatedPositioned(
+                                            left: bg2ImageOffset.value.dx,
+                                            top: bg2ImageOffset.value.dy,
+                                            duration: const Duration(
+                                                milliseconds: 300),
+                                            curve: Curves.easeOut,
+                                            child: SizedBox(
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: Image.asset(
+                                                "assets/bg2.png",
+                                                // fit: BoxFit.fill,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      ValueListenableBuilder(
+                                        valueListenable: bg3ImageOffset,
+                                        builder: (context, v, c) {
+                                          return AnimatedPositioned(
+                                            left: bg3ImageOffset.value.dx,
+                                            top: bg3ImageOffset.value.dy,
+                                            duration: const Duration(
+                                                milliseconds: 300),
+                                            curve: Curves.easeOut,
+                                            child: SizedBox(
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: Image.asset(
+                                                "assets/bg3.png",
+                                                // fit: BoxFit.fill,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      Positioned(
+                                        // top: bg1TextOffSet,
+                                        child: SizedBox(
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Center(
+                                            child: Opacity(
+                                              opacity: bg1TextOpacity,
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    "WELCOME",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleLarge
+                                                        ?.copyWith(
+                                                          fontSize: 60,
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  Text(
+                                                    // "Writing Testcases for your code is doubting\nyour own coding abilities. It's sign of weakness",
+                                                    '"Trust your code like a craftsman trusts his tools\nsecond-guessing it only dulls your edge"',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleLarge
+                                                        ?.copyWith(
+                                                          fontSize: 30,
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            ValueListenableBuilder(
-                              valueListenable: bg4ImageOffset,
-                              builder: (context, v, c) {
-                                return AnimatedPositioned(
-                                  left: bg4ImageOffset.value.dx,
-                                  top: bg4ImageOffset.value.dy,
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeOut,
-                                  child: SizedBox(
-                                    height: MediaQuery.of(context).size.height,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Image.asset(
-                                      "assets/bg4.png",
-                                      // fit: BoxFit.fill,
-                                    ),
+                                      ),
+                                      ValueListenableBuilder(
+                                        valueListenable: bg4ImageOffset,
+                                        builder: (context, v, c) {
+                                          return AnimatedPositioned(
+                                            left: bg4ImageOffset.value.dx,
+                                            top: bg4ImageOffset.value.dy,
+                                            duration: const Duration(
+                                                milliseconds: 300),
+                                            curve: Curves.easeOut,
+                                            child: SizedBox(
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: Image.asset(
+                                                "assets/bg4.png",
+                                                // fit: BoxFit.fill,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      ValueListenableBuilder(
+                                        valueListenable: bg5ImageOffset,
+                                        builder: (context, v, c) {
+                                          return AnimatedPositioned(
+                                            left: bg5ImageOffset.value.dx,
+                                            top: bg5ImageOffset.value.dy,
+                                            duration: const Duration(
+                                                milliseconds: 300),
+                                            curve: Curves.easeOut,
+                                            child: SizedBox(
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: Image.asset(
+                                                "assets/bg5.png",
+                                                // fit: BoxFit.fill,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Image.asset(
+                                          "assets/bg6.png",
+                                          // fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 );
                               },
-                            ),
-                            ValueListenableBuilder(
-                              valueListenable: bg5ImageOffset,
-                              builder: (context, v, c) {
-                                return AnimatedPositioned(
-                                  left: bg5ImageOffset.value.dx,
-                                  top: bg5ImageOffset.value.dy,
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeOut,
-                                  child: SizedBox(
-                                    height: MediaQuery.of(context).size.height,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Image.asset(
-                                      "assets/bg5.png",
-                                      // fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height,
-                              width: MediaQuery.of(context).size.width,
-                              child: Image.asset(
-                                "assets/bg6.png",
-                                // fit: BoxFit.fill,
-                              ),
                             ),
                           ],
                         ),
@@ -341,29 +423,30 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 },
                               ),
                               ValueListenableBuilder(
-                                  valueListenable: t2,
-                                  builder: (context, v, c) {
-                                    return Positioned(
-                                      top: t2.value,
-                                      child: const Text(
-                                        "WEB DESINGER",
-                                        style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontSize: 180,
-                                          height: 1,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                valueListenable: t2,
+                                builder: (context, v, c) {
+                                  return Positioned(
+                                    top: t2.value,
+                                    child: const Text(
+                                      "WEB DESINGER",
+                                      style: TextStyle(
+                                        color: Colors.blueAccent,
+                                        fontSize: 180,
+                                        height: 1,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                    );
-                                    // .animate(
-                                    //     target: chiragPanchal.value ? 1 : 0)
-                                    // .slideY(
-                                    //   begin: 0.25,
-                                    //   end: 0,
-                                    //   duration: 300.ms,
-                                    //   curve: Curves.easeIn,
-                                    // );
-                                  }),
+                                    ),
+                                  );
+                                  // .animate(
+                                  //     target: chiragPanchal.value ? 1 : 0)
+                                  // .slideY(
+                                  //   begin: 0.25,
+                                  //   end: 0,
+                                  //   duration: 300.ms,
+                                  //   curve: Curves.easeIn,
+                                  // );
+                                },
+                              ),
                               ValueListenableBuilder(
                                 valueListenable: t3,
                                 builder: (context, v, c) {
